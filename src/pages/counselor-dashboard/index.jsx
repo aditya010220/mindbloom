@@ -12,6 +12,9 @@ import Button from '../../components/ui/Button';
 
 const CounselorDashboard = () => {
   const [activeTab, setActiveTab] = useState('overview');
+  const [showNotifications, setShowNotifications] = useState(false);
+  const [showNewSession, setShowNewSession] = useState(false);
+  const [newSession, setNewSession] = useState({ student: '', date: '', time: '', type: 'individual', notes: '' });
 
   const dashboardTabs = [
     { id: 'overview', name: 'Overview', icon: 'LayoutDashboard' },
