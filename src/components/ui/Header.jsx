@@ -166,7 +166,7 @@ const Header = ({ userRole = 'student', isAuthenticated = true }) => {
             <nav className="hidden md:flex items-center space-x-1">
               {navigationItems?.map((item) => (
                 <Button
-                  key={item?.path}
+                  key={`${item?.path}-${item?.label}`}
                   variant={location?.pathname === item?.path ? "secondary" : "ghost"}
                   onClick={() => handleNavigation(item?.path)}
                   iconName={item?.icon}
@@ -299,7 +299,7 @@ const Header = ({ userRole = 'student', isAuthenticated = true }) => {
             <div className="px-4 py-4 space-y-2">
               {navigationItems?.map((item) => (
                 <Button
-                  key={item?.path}
+                  key={`${item?.path}-${item?.label}`}
                   variant={location?.pathname === item?.path ? "secondary" : "ghost"}
                   fullWidth
                   onClick={() => handleNavigation(item?.path)}
