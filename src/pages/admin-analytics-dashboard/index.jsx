@@ -14,6 +14,9 @@ const AdminAnalyticsDashboard = () => {
   const navigate = useNavigate();
   const [currentTime, setCurrentTime] = useState(new Date());
   const [activeTab, setActiveTab] = useState('overview');
+  const [isRefreshing, setIsRefreshing] = useState(false);
+  const [showConfig, setShowConfig] = useState(false);
+  const [config, setConfig] = useState({ autoRefresh: false, granularity: 'weekly', anonymize: true });
 
   // Update time every minute
   useEffect(() => {
@@ -95,6 +98,21 @@ const AdminAnalyticsDashboard = () => {
     });
   };
 
+  const handleRefresh = async () => {
+    if (isRefreshing) return;
+    setIsRefreshing(true);
+    try {
+      await new Promise((r) => setTimeout(r, 800));
+      setCurrentTime(new Date());
+    } finally {
+      setIsRefreshing(false);
+    }
+  };
+
+  const handleSaveConfig = () => {
+    setShowConfig(false);
+  };
+
   return (
     <div className="min-h-screen bg-background">
       <Header userRole="admin" isAuthenticated={true} />
@@ -114,12 +132,12 @@ const AdminAnalyticsDashboard = () => {
                   Last updated: {formatTime(currentTime)}
                 </p>
               </div>
-              
+
               <div className="flex items-center space-x-3">
-                <Button variant="outline" iconName="RefreshCw" size="sm">
+                <Button variant="outline" iconName="RefreshCw" size="sm" onClick={handleRefresh} loading={isRefreshing}>
                   Refresh Data
                 </Button>
-                <Button variant="outline" iconName="Settings" size="sm">
+                <Button variant="outline" iconName="Settings" size="sm" onClick={() => setShowConfig(true)}>
                   Configure
                 </Button>
                 <Button variant="default" iconName="AlertTriangle" size="sm">
@@ -291,6 +309,65 @@ const AdminAnalyticsDashboard = () => {
           {activeTab === 'export' && (
             <div className="space-y-8">
               <ExportPanel />
+            </div>
+          )}
+          {/* Configuration Modal */}
+          {showConfig && (
+            <div className="fixed inset-0 z-100 bg-black/50 backdrop-blur-sm flex items-center justify-center p-4">
+              <div className="glass-card w-full max-w-lg rounded-lg p-6 animate-growth">
+                <div className="flex items-center justify-between mb-4">
+                  <div className="flex items-center space-x-2">
+                    <Icon name="Settings" size={20} className="text-primary" />
+                    <h3 className="text-lg font-heading font-semibold text-foreground">Analytics Configuration</h3>
+                  </div>
+                  <Button variant="ghost" size="icon" iconName="X" onClick={() => setShowConfig(false)} />
+                </div>
+
+                <div className="space-y-4">
+                  <div className="flex items-center justify-between">
+                    <div>
+                      <p className="text-sm font-medium text-foreground">Auto-refresh data</p>
+                      <p className="text-xs text-muted-foreground">Refresh dashboard data every 5 minutes</p>
+                    </div>
+                    <input
+                      type="checkbox"
+                      className="rounded border-border"
+                      checked={config.autoRefresh}
+                      onChange={(e) => setConfig((c) => ({ ...c, autoRefresh: e.target.checked }))}
+                    />
+                  </div>
+
+                  <div>
+                    <p className="text-sm font-medium text-foreground mb-2">Data granularity</p>
+                    <div className="flex gap-2 flex-wrap">
+                      {['daily','weekly','monthly'].map((g) => (
+                        <label key={g} className={`px-3 py-1 rounded border cursor-pointer text-sm ${config.granularity===g? 'border-primary text-primary bg-primary/5':'border-border'}`}>
+                          <input type="radio" name="granularity" value={g} className="hidden" checked={config.granularity===g} onChange={() => setConfig((c)=>({...c,granularity:g}))} />
+                          {g.charAt(0).toUpperCase()+g.slice(1)}
+                        </label>
+                      ))}
+                    </div>
+                  </div>
+
+                  <div className="flex items-center justify-between">
+                    <div>
+                      <p className="text-sm font-medium text-foreground">Anonymize student data</p>
+                      <p className="text-xs text-muted-foreground">Hide personally identifiable information</p>
+                    </div>
+                    <input
+                      type="checkbox"
+                      className="rounded border-border"
+                      checked={config.anonymize}
+                      onChange={(e) => setConfig((c) => ({ ...c, anonymize: e.target.checked }))}
+                    />
+                  </div>
+                </div>
+
+                <div className="flex justify-end gap-2 mt-6">
+                  <Button variant="outline" onClick={() => setShowConfig(false)}>Cancel</Button>
+                  <Button variant="default" iconName="Save" iconPosition="left" onClick={handleSaveConfig}>Save</Button>
+                </div>
+              </div>
             </div>
           )}
         </div>
