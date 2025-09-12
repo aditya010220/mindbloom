@@ -12,6 +12,8 @@ import StudentDashboard from './pages/student-dashboard';
 import AdminLogin from './pages/admin-login';
 import CounselorLogin from './pages/counselor-login';
 import RegisterPage from './pages/register';
+import CounselorSessions from './pages/counselor-sessions';
+import CounselorSchedule from './pages/counselor-schedule';
 
 const Routes = () => {
   return (
@@ -23,6 +25,8 @@ const Routes = () => {
         <Route path="/" element={<AdminAnalyticsDashboard />} />
         <Route path="/ai-chatbot-support" element={<AIChatbotSupport />} />
         <Route path="/counselor-dashboard" element={<CounselorDashboard />} />
+        <Route path="/counselor-sessions" element={<CounselorSessions />} />
+        <Route path="/counselor-schedule" element={<CounselorSchedule />} />
         <Route path="/student-login" element={<StudentLogin />} />
         <Route path="/admin-login" element={<AdminLogin />} />
         <Route path="/counselor-login" element={<CounselorLogin />} />
