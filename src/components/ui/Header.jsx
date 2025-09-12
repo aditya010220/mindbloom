@@ -57,8 +57,8 @@ const Header = ({ userRole = 'student', isAuthenticated = true }) => {
     if (userRole === 'admin') {
       return [
         ...baseItems,
-        { label: 'Analytics', path: '/admin-analytics-dashboard', icon: 'BarChart3' },
-        { label: 'Users', path: '/admin-users', icon: 'Users' }
+        // { label: 'Analytics', path: '/admin-analytics-dashboard', icon: 'BarChart3' },
+        // { label: '', path: '/admin-users', icon: '' }
       ];
     }
 
