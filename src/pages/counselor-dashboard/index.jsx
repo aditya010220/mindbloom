@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import Header from '../../components/ui/Header';
 import TodaySchedule from './components/TodaySchedule';
 import CaseloadOverview from './components/CaseloadOverview';
@@ -10,12 +10,19 @@ import RiskAlerts from './components/RiskAlerts';
 import Icon from '../../components/AppIcon';
 import Button from '../../components/ui/Button';
 import Input from '../../components/ui/Input';
+import { useLocation, useNavigate } from 'react-router-dom';
 
 const CounselorDashboard = () => {
   const [activeTab, setActiveTab] = useState('overview');
   const [showNotifications, setShowNotifications] = useState(false);
   const [showNewSession, setShowNewSession] = useState(false);
   const [newSession, setNewSession] = useState({ student: '', date: '', time: '', type: 'individual', notes: '' });
+  const [showBio, setShowBio] = useState(false);
+  const [showSettings, setShowSettings] = useState(false);
+  const [bio, setBio] = useState({ name: 'Dr. Taylor Reed', title: 'Licensed Counselor', phone: '', email: '', expertise: 'Anxiety, Stress, CBT', officeHours: 'Mon-Fri 9:00-17:00' });
+  const [prefs, setPrefs] = useState({ notifyEmail: true, notifySMS: false, timezone: 'America/New_York', availability: 'standard' });
+  const location = useLocation();
+  const navigate = useNavigate();
 
   const dashboardTabs = [
     { id: 'overview', name: 'Overview', icon: 'LayoutDashboard' },
@@ -31,6 +38,17 @@ const CounselorDashboard = () => {
     totalStudents: 24,
     highRiskAlerts: 3,
     pendingNotes: 2
+  };
+
+  useEffect(() => {
+    const params = new URLSearchParams(location.search);
+    const section = params.get('section');
+    setShowBio(section === 'bio');
+    setShowSettings(section === 'settings');
+  }, [location.search]);
+
+  const closeSection = () => {
+    navigate('/counselor-dashboard', { replace: true });
   };
 
   const renderTabContent = () => {
@@ -284,6 +302,86 @@ const CounselorDashboard = () => {
               <Button variant="default" iconName="Save" iconPosition="left" onClick={()=>{setShowNewSession(false);}}>
                 Create Session
               </Button>
+            </div>
+          </div>
+        </div>
+      )}
+      {/* Bio Panel */}
+      {showBio && (
+        <div className="fixed inset-0 z-100 bg-black/50 backdrop-blur-sm flex items-center justify-center p-4">
+          <div className="glass-card max-w-lg w-full p-6 rounded-lg animate-growth">
+            <div className="flex items-center justify-between mb-4">
+              <div className="flex items-center space-x-2">
+                <Icon name="UserCircle" size={20} className="text-primary" />
+                <h3 className="text-lg font-heading font-semibold text-foreground">Bio</h3>
+              </div>
+              <Button variant="ghost" size="icon" iconName="X" onClick={closeSection} />
+            </div>
+            <div className="space-y-3">
+              <Input label="Full Name" value={bio.name} onChange={(e)=>setBio(b=>({...b,name:e.target.value}))} />
+              <Input label="Title" value={bio.title} onChange={(e)=>setBio(b=>({...b,title:e.target.value}))} />
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                <Input label="Phone" value={bio.phone} onChange={(e)=>setBio(b=>({...b,phone:e.target.value}))} />
+                <Input label="Email" type="email" value={bio.email} onChange={(e)=>setBio(b=>({...b,email:e.target.value}))} />
+              </div>
+              <Input label="Areas of Expertise" value={bio.expertise} onChange={(e)=>setBio(b=>({...b,expertise:e.target.value}))} />
+              <Input label="Office Hours" value={bio.officeHours} onChange={(e)=>setBio(b=>({...b,officeHours:e.target.value}))} />
+            </div>
+            <div className="flex justify-end gap-2 mt-4">
+              <Button variant="outline" onClick={closeSection}>Close</Button>
+              <Button variant="default" iconName="Save" iconPosition="left" onClick={closeSection}>Save</Button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Settings Panel */}
+      {showSettings && (
+        <div className="fixed inset-0 z-100 bg-black/50 backdrop-blur-sm flex items-center justify-center p-4">
+          <div className="glass-card max-w-lg w-full p-6 rounded-lg animate-growth">
+            <div className="flex items-center justify-between mb-4">
+              <div className="flex items-center space-x-2">
+                <Icon name="Settings" size={20} className="text-primary" />
+                <h3 className="text-lg font-heading font-semibold text-foreground">Settings</h3>
+              </div>
+              <Button variant="ghost" size="icon" iconName="X" onClick={closeSection} />
+            </div>
+            <div className="space-y-4">
+              <div className="flex items-center justify-between">
+                <div>
+                  <p className="text-sm font-medium text-foreground">Email notifications</p>
+                  <p className="text-xs text-muted-foreground">Session reminders and alerts</p>
+                </div>
+                <input type="checkbox" className="rounded border-border" checked={prefs.notifyEmail} onChange={(e)=>setPrefs(p=>({...p, notifyEmail:e.target.checked}))} />
+              </div>
+              <div className="flex items-center justify-between">
+                <div>
+                  <p className="text-sm font-medium text-foreground">SMS notifications</p>
+                  <p className="text-xs text-muted-foreground">Time-sensitive alerts</p>
+                </div>
+                <input type="checkbox" className="rounded border-border" checked={prefs.notifySMS} onChange={(e)=>setPrefs(p=>({...p, notifySMS:e.target.checked}))} />
+              </div>
+              <div>
+                <p className="text-sm font-medium text-foreground mb-1">Timezone</p>
+                <select value={prefs.timezone} onChange={(e)=>setPrefs(p=>({...p, timezone:e.target.value}))} className="w-full h-10 border border-border rounded-md bg-background text-foreground px-3">
+                  <option value="America/New_York">America/New_York</option>
+                  <option value="America/Chicago">America/Chicago</option>
+                  <option value="America/Denver">America/Denver</option>
+                  <option value="America/Los_Angeles">America/Los_Angeles</option>
+                </select>
+              </div>
+              <div>
+                <p className="text-sm font-medium text-foreground mb-1">Availability</p>
+                <div className="flex gap-2 flex-wrap">
+                  {['standard','extended','custom'].map(a => (
+                    <button key={a} type="button" onClick={()=>setPrefs(p=>({...p, availability:a}))} className={`px-3 py-1 rounded border text-sm ${prefs.availability===a? 'border-primary text-primary bg-primary/5':'border-border'}`}>{a.charAt(0).toUpperCase()+a.slice(1)}</button>
+                  ))}
+                </div>
+              </div>
+            </div>
+            <div className="flex justify-end gap-2 mt-4">
+              <Button variant="outline" onClick={closeSection}>Close</Button>
+              <Button variant="default" iconName="Save" iconPosition="left" onClick={closeSection}>Save</Button>
             </div>
           </div>
         </div>
