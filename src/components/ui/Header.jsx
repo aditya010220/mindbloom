@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import Icon from '../AppIcon';
 import Button from './Button';
@@ -6,6 +6,8 @@ import Button from './Button';
 const Header = ({ userRole = 'student', isAuthenticated = true }) => {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [showCrisisSupport, setShowCrisisSupport] = useState(false);
+  const [isProfileMenuOpen, setIsProfileMenuOpen] = useState(false);
+  const profileMenuRef = useRef(null);
   const location = useLocation();
   const navigate = useNavigate();
 
@@ -13,6 +15,17 @@ const Header = ({ userRole = 'student', isAuthenticated = true }) => {
   useEffect(() => {
     setIsMobileMenuOpen(false);
   }, [location?.pathname]);
+
+  // Close profile menu on outside click
+  useEffect(() => {
+    const handleClickOutside = (e) => {
+      if (profileMenuRef?.current && !profileMenuRef.current.contains(e.target)) {
+        setIsProfileMenuOpen(false);
+      }
+    };
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => document.removeEventListener('mousedown', handleClickOutside);
+  }, []);
 
   // Role-based navigation items
   const getNavigationItems = () => {
@@ -61,6 +74,22 @@ const Header = ({ userRole = 'student', isAuthenticated = true }) => {
 
   const handleCrisisSupport = () => {
     setShowCrisisSupport(true);
+  };
+
+  const handleLogout = () => {
+    try {
+      localStorage.removeItem('isAuthenticated');
+      localStorage.removeItem('userRole');
+    } finally {
+      setIsProfileMenuOpen(false);
+      const loginPaths = {
+        student: '/student-login',
+        counselor: '/counselor-login',
+        admin: '/admin-login'
+      };
+      navigate(loginPaths[userRole] || '/student-login', { replace: true });
+      setIsMobileMenuOpen(false);
+    }
   };
 
   const Logo = () => (
@@ -171,12 +200,77 @@ const Header = ({ userRole = 'student', isAuthenticated = true }) => {
                     Welcome back
                   </p>
                 </div>
-                <Button
-                  variant="ghost"
-                  size="icon"
-                  iconName="User"
-                  className="rounded-full"
-                />
+                <div className="relative" ref={profileMenuRef}>
+                  <Button
+                    variant="ghost"
+                    size="icon"
+                    iconName="User"
+                    className="rounded-full"
+                    onClick={() => setIsProfileMenuOpen(!isProfileMenuOpen)}
+                  />
+                  {isProfileMenuOpen && (userRole === 'admin' || userRole === 'counselor' || userRole === 'student') && (
+                    <div className="absolute right-0 mt-2 w-48 bg-popover text-foreground border border-border rounded-lg shadow-moderate p-2">
+                      {userRole === 'counselor' && (
+                        <>
+                          <Button
+                            variant="ghost"
+                            fullWidth
+                            onClick={() => { setIsProfileMenuOpen(false); navigate('/counselor-dashboard?section=bio'); }}
+                            iconName="UserCircle"
+                            iconPosition="left"
+                            className="justify-start"
+                          >
+                            Bio
+                          </Button>
+                          <Button
+                            variant="ghost"
+                            fullWidth
+                            onClick={() => { setIsProfileMenuOpen(false); navigate('/counselor-dashboard?section=settings'); }}
+                            iconName="Settings"
+                            iconPosition="left"
+                            className="justify-start"
+                          >
+                            Settings
+                          </Button>
+                        </>
+                      )}
+                      {userRole === 'student' && (
+                        <>
+                          <Button
+                            variant="ghost"
+                            fullWidth
+                            onClick={() => { setIsProfileMenuOpen(false); navigate('/student-dashboard?section=profile'); }}
+                            iconName="UserCircle"
+                            iconPosition="left"
+                            className="justify-start"
+                          >
+                            Profile
+                          </Button>
+                          <Button
+                            variant="ghost"
+                            fullWidth
+                            onClick={() => { setIsProfileMenuOpen(false); navigate('/student-dashboard?section=settings'); }}
+                            iconName="Settings"
+                            iconPosition="left"
+                            className="justify-start"
+                          >
+                            Settings
+                          </Button>
+                        </>
+                      )}
+                      <Button
+                        variant="ghost"
+                        fullWidth
+                        onClick={handleLogout}
+                        iconName="LogOut"
+                        iconPosition="left"
+                        className="justify-start hover:bg-error/10"
+                      >
+                        Logout
+                      </Button>
+                    </div>
+                  )}
+                </div>
               </div>
             </div>
 
@@ -234,6 +328,68 @@ const Header = ({ userRole = 'student', isAuthenticated = true }) => {
                     className="rounded-full"
                   />
                 </div>
+                {(userRole === 'admin' || userRole === 'counselor' || userRole === 'student') && (
+                  <div className="space-y-2">
+                    {userRole === 'counselor' && (
+                      <>
+                        <Button
+                          variant="ghost"
+                          fullWidth
+                          onClick={() => { setIsMobileMenuOpen(false); navigate('/counselor-dashboard?section=bio'); }}
+                          iconName="UserCircle"
+                          iconPosition="left"
+                          className="justify-start"
+                        >
+                          Bio
+                        </Button>
+                        <Button
+                          variant="ghost"
+                          fullWidth
+                          onClick={() => { setIsMobileMenuOpen(false); navigate('/counselor-dashboard?section=settings'); }}
+                          iconName="Settings"
+                          iconPosition="left"
+                          className="justify-start"
+                        >
+                          Settings
+                        </Button>
+                      </>
+                    )}
+                    {userRole === 'student' && (
+                      <>
+                        <Button
+                          variant="ghost"
+                          fullWidth
+                          onClick={() => { setIsMobileMenuOpen(false); navigate('/student-dashboard?section=profile'); }}
+                          iconName="UserCircle"
+                          iconPosition="left"
+                          className="justify-start"
+                        >
+                          Profile
+                        </Button>
+                        <Button
+                          variant="ghost"
+                          fullWidth
+                          onClick={() => { setIsMobileMenuOpen(false); navigate('/student-dashboard?section=settings'); }}
+                          iconName="Settings"
+                          iconPosition="left"
+                          className="justify-start"
+                        >
+                          Settings
+                        </Button>
+                      </>
+                    )}
+                    <Button
+                      variant="outline"
+                      fullWidth
+                      onClick={handleLogout}
+                      iconName="LogOut"
+                      iconPosition="left"
+                      className="text-error border-error/20 hover:bg-error/10"
+                    >
+                      Logout
+                    </Button>
+                  </div>
+                )}
               </div>
             </div>
           </div>

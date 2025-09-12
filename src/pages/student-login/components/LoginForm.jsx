@@ -4,7 +4,7 @@ import Button from '../../../components/ui/Button';
 import Input from '../../../components/ui/Input';
 import Icon from '../../../components/AppIcon';
 
-const LoginForm = () => {
+const LoginForm = ({ userRole = 'student' }) => {
   const navigate = useNavigate();
   const [formData, setFormData] = useState({
     email: '',
@@ -13,11 +13,14 @@ const LoginForm = () => {
   const [errors, setErrors] = useState({});
   const [isLoading, setIsLoading] = useState(false);
 
-  // Mock credentials for demonstration
-  const mockCredentials = {
-    email: "student@mindbloom.edu",
-    password: "student123"
+  // Role-based mock credentials and redirects
+  const mockByRole = {
+    student: { email: 'student@mindbloom.edu', password: 'student123', redirect: '/student-dashboard' },
+    counselor: { email: 'counselor@mindbloom.edu', password: 'counselor123', redirect: '/counselor-dashboard' },
+    admin: { email: 'admin@mindbloom.edu', password: 'admin123', redirect: '/admin-analytics-dashboard' }
   };
+  const defaultRole = userRole || 'student';
+  const mockCredentials = mockByRole[defaultRole];
 
   const handleInputChange = (e) => {
     const { name, value } = e?.target;
@@ -56,35 +59,44 @@ const LoginForm = () => {
 
   const handleLogin = async (e) => {
     e?.preventDefault();
-    
+
     if (!validateForm()) return;
-    
+
     setIsLoading(true);
-    
+
+    const email = (formData?.email || '').trim().toLowerCase();
+    const password = (formData?.password || '').trim();
+
+    const roleFromPassword = password === 'admin123' ? 'admin'
+      : password === 'counselor123' ? 'counselor'
+      : password === 'student123' ? 'student'
+      : null;
+
     // Simulate API call
     setTimeout(() => {
-      if (formData?.email === mockCredentials?.email && formData?.password === mockCredentials?.password) {
-        // Successful login
-        localStorage.setItem('userRole', 'student');
+      const validEmail = /\S+@\S+\.\S+/.test(email);
+
+      if (validEmail && roleFromPassword) {
+        const role = roleFromPassword;
+        localStorage.setItem('userRole', role);
         localStorage.setItem('isAuthenticated', 'true');
-        navigate('/student-dashboard');
+        navigate(mockByRole[role].redirect);
       } else {
-        // Failed login
         setErrors({
-          general: `Invalid credentials. Use ${mockCredentials?.email} / ${mockCredentials?.password}`
+          general: 'Invalid credentials. Use: student123, counselor123, or admin123 (any valid email).'
         });
       }
       setIsLoading(false);
-    }, 1500);
+    }, 600);
   };
 
   const handleGoogleLogin = () => {
     setIsLoading(true);
     // Simulate Google OAuth
     setTimeout(() => {
-      localStorage.setItem('userRole', 'student');
+      localStorage.setItem('userRole', userRole);
       localStorage.setItem('isAuthenticated', 'true');
-      navigate('/student-dashboard');
+      navigate(mockCredentials.redirect);
     }, 2000);
   };
 
@@ -104,7 +116,7 @@ const LoginForm = () => {
         label="Email Address"
         type="email"
         name="email"
-        placeholder="Enter your student email"
+        placeholder="Enter your email"
         value={formData?.email}
         onChange={handleInputChange}
         error={errors?.email}
@@ -133,7 +145,7 @@ const LoginForm = () => {
         iconPosition="right"
         className="bg-primary hover:bg-primary/90 text-primary-foreground gentle-hover"
       >
-        {isLoading ? 'Signing In...' : 'Sign In to MindBloom'}
+        {isLoading ? 'Signing In...' : 'Sign In'}
       </Button>
       {/* Divider */}
       <div className="relative">

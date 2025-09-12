@@ -9,6 +9,9 @@ import StudentLogin from './pages/student-login';
 import AppointmentBooking from './pages/appointment-booking';
 import AdminAnalyticsDashboard from './pages/admin-analytics-dashboard';
 import StudentDashboard from './pages/student-dashboard';
+import AdminLogin from './pages/admin-login';
+import CounselorLogin from './pages/counselor-login';
+import RegisterPage from './pages/register';
 
 const Routes = () => {
   return (
@@ -21,6 +24,9 @@ const Routes = () => {
         <Route path="/ai-chatbot-support" element={<AIChatbotSupport />} />
         <Route path="/counselor-dashboard" element={<CounselorDashboard />} />
         <Route path="/student-login" element={<StudentLogin />} />
+        <Route path="/admin-login" element={<AdminLogin />} />
+        <Route path="/counselor-login" element={<CounselorLogin />} />
+        <Route path="/register" element={<RegisterPage />} />
         <Route path="/appointment-booking" element={<AppointmentBooking />} />
         <Route path="/admin-analytics-dashboard" element={<AdminAnalyticsDashboard />} />
         <Route path="/student-dashboard" element={<StudentDashboard />} />

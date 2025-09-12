@@ -12,16 +12,15 @@ const AuthLinks = () => {
   };
 
   const handleCreateAccount = () => {
-    // Mock account creation
-    alert('Account creation would redirect to registration. For demo, use existing credentials.');
+    navigate('/register');
   };
 
   const handleCounselorLogin = () => {
-    navigate('/counselor-dashboard');
+    navigate('/counselor-login');
   };
 
   const handleAdminLogin = () => {
-    navigate('/admin-analytics-dashboard');
+    navigate('/admin-login');
   };
 
   return (
@@ -49,8 +48,8 @@ const AuthLinks = () => {
         </Button>
       </div>
 
-      {/* Divider */}
-      <div className="relative">
+      
+      {/* <div className="relative">
         <div className="absolute inset-0 flex items-center">
           <div className="w-full border-t border-border/30"></div>
         </div>
@@ -59,11 +58,11 @@ const AuthLinks = () => {
             Other Portals
           </span>
         </div>
-      </div>
+      </div> */}
 
       {/* Role-based Login Links */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-        <Button
+      {/* <div className="grid grid-cols-1 sm:grid-cols-2 gap-3"> */}
+        {/* <Button
           variant="ghost"
           onClick={handleCounselorLogin}
           iconName="Stethoscope"
@@ -74,9 +73,9 @@ const AuthLinks = () => {
             <div className="font-medium text-sm">Counselor Portal</div>
             <div className="text-xs text-muted-foreground">Manage sessions & students</div>
           </div>
-        </Button>
+        </Button> */}
         
-        <Button
+        {/* <Button
           variant="ghost"
           onClick={handleAdminLogin}
           iconName="Settings"
@@ -87,33 +86,15 @@ const AuthLinks = () => {
             <div className="font-medium text-sm">Admin Portal</div>
             <div className="text-xs text-muted-foreground">Analytics & management</div>
           </div>
-        </Button>
-      </div>
+        </Button> */}
+      {/* </div> */}
 
       {/* Support Information */}
       <div className="text-center pt-4 border-t border-border/30">
         <p className="text-xs text-muted-foreground mb-2">
           Need immediate support?
         </p>
-        <div className="flex items-center justify-center space-x-4">
-          <Button
-            variant="link"
-            iconName="Phone"
-            iconPosition="left"
-            className="text-error hover:text-error/80 p-0 h-auto text-xs"
-          >
-            Crisis Hotline: 988
-          </Button>
-          <Button
-            variant="link"
-            iconName="MessageCircle"
-            iconPosition="left"
-            onClick={() => navigate('/ai-chatbot-support')}
-            className="text-primary hover:text-primary/80 p-0 h-auto text-xs"
-          >
-            AI Support Chat
-          </Button>
-        </div>
+        
       </div>
     </div>
   );

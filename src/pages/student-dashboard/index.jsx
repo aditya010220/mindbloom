@@ -7,6 +7,7 @@ import RecentActivity from './components/RecentActivity';
 import UpcomingAppointments from './components/UpcomingAppointments';
 import ResourceHub from './components/ResourceHub';
 import PeerSupportPreview from './components/PeerSupportPreview';
+import MotivationTicker from './components/MotivationTicker';
 
 const StudentDashboard = () => {
   const [currentMood, setCurrentMood] = useState('neutral');
@@ -45,11 +46,16 @@ const StudentDashboard = () => {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
           {/* Welcome Section */}
           <div className="mb-8">
-            <WelcomeSection 
+            <WelcomeSection
               userName={userData?.name}
               currentMood={currentMood}
               onMoodUpdate={handleMoodUpdate}
             />
+          </div>
+
+          {/* Motivation Line */}
+          <div className="mb-8">
+            <MotivationTicker />
           </div>
 
           {/* Quick Actions */}
