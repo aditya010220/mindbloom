@@ -9,7 +9,7 @@ const CrisisAlert = ({ isVisible, onClose }) => {
   if (!isVisible) return null;
 
   return (
-    <div className="fixed inset-0 z-300 bg-black/50 backdrop-blur-sm flex items-center justify-center p-4">
+    <div className="fixed inset-0 z-100 bg-black/50 backdrop-blur-sm flex items-center justify-center p-4">
       <div className="glass-card max-w-md w-full p-6 rounded-lg animate-growth">
         <div className="flex items-center justify-between mb-4">
           <div className="flex items-center space-x-2">
