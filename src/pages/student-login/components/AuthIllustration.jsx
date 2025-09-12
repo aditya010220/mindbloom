@@ -1,5 +1,6 @@
 import React from 'react';
 import Icon from '../../../components/AppIcon';
+import Image from '../../../components/AppImage';
 
 const AuthIllustration = () => {
   return (
@@ -11,16 +12,12 @@ const AuthIllustration = () => {
             <div className="w-20 h-20 rounded-full bg-primary/15 flex items-center justify-center">
               <Icon name="Shield" size={32} className="text-primary" />
             </div>
-            <div className="w-full rounded-xl border border-border/50 bg-background p-4">
-              <div className="flex items-center gap-3 mb-3">
-                <div className="w-10 h-10 rounded-full bg-secondary/20" />
-                <div className="h-2 w-24 rounded bg-muted/60" />
-              </div>
-              <div className="space-y-2">
-                <div className="h-3 w-3/4 rounded bg-muted/60" />
-                <div className="h-3 w-2/3 rounded bg-muted/50" />
-                <div className="h-3 w-1/2 rounded bg-muted/40" />
-              </div>
+            <div className="w-full rounded-xl border border-border/50 bg-background p-3">
+              <Image
+                src="https://cdn.builder.io/api/v1/image/assets%2F9a77089a1d9440a79d59f2447a465d11%2F3b5f5fd8998948cdb91007771f9c56e0?format=webp&width=800"
+                alt="Admin portal illustration"
+                className="w-full h-40 object-cover rounded-md"
+              />
             </div>
             <div className="text-center text-sm text-muted-foreground">
               Your privacy is protected
