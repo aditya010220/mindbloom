@@ -172,7 +172,7 @@ const RiskAlerts = () => {
         {filteredAlerts?.map((alert) => (
           <div
             key={alert?.id}
-            className={`p-4 rounded-lg border gentle-transition ${
+            className={`p-4 rounded-lg border gentle-transition relative overflow-hidden ${
               alert?.riskLevel === 'critical' ?'bg-red-50/50 border-red-200 shadow-lg' :'bg-background/50 border-border hover:bg-background/80'
             }`}
           >
@@ -248,7 +248,7 @@ const RiskAlerts = () => {
                 </div>
               </div>
               
-              <div className="flex items-center space-x-2 ml-4">
+              <div className="flex items-center flex-wrap gap-2 ml-4">
                 <div className="text-right mr-2">
                   <div className="text-xs text-muted-foreground">Priority</div>
                   <div className="text-sm font-medium text-foreground">#{alert?.priority}</div>

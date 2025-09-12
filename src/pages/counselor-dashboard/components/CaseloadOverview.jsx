@@ -177,7 +177,7 @@ const CaseloadOverview = () => {
           {priorityStudents?.map((student) => (
             <div
               key={student?.id}
-              className="p-4 bg-background/50 rounded-lg border border-border hover:bg-background/80 gentle-transition"
+              className="p-4 bg-background/50 rounded-lg border border-border hover:bg-background/80 gentle-transition relative overflow-hidden"
             >
               <div className="flex items-start justify-between">
                 <div className="flex items-start space-x-4 flex-1">
@@ -222,7 +222,7 @@ const CaseloadOverview = () => {
                   </div>
                 </div>
                 
-                <div className="flex items-center space-x-2 ml-4">
+                <div className="flex items-center flex-wrap gap-2 ml-4">
                   <Button
                     variant="outline"
                     size="sm"
