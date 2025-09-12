@@ -8,8 +8,8 @@ const ExportPanel = () => {
   const [dateRange, setDateRange] = useState('month');
   const [isExporting, setIsExporting] = useState(false);
 
-  const getSelectedReportData = () => {
-    return reportTypes.filter(r => selectedReports.includes(r.id)).map(r => {
+  const getSelectedReportData = (ids = selectedReports) => {
+    return reportTypes.filter(r => ids.includes(r.id)).map(r => {
       const sizeInKB = r.size.includes('MB') ? parseFloat(r.size) * 1024 : parseFloat(r.size);
       return {
         id: r.id,
@@ -125,11 +125,12 @@ const ExportPanel = () => {
   };
 
   const handleExport = async () => {
-    if (selectedReports.length === 0) return;
+    const ids = selectedReports.length > 0 ? selectedReports : reportTypes.map(r => r.id);
+    if (ids.length === 0) return;
     setIsExporting(true);
 
     try {
-      const selected = getSelectedReportData();
+      const selected = getSelectedReportData(ids);
       const exportedAt = new Date().toISOString();
       const rangeLabel = getDateRangeLabel();
 
@@ -297,13 +298,13 @@ const ExportPanel = () => {
       {/* Export Button */}
       <div className="flex items-center justify-between pt-4 border-t border-border">
         <p className="text-xs text-muted-foreground">
-          Reports will be generated with current data and sent to your email
+          Exports download immediately. If no reports are selected, all will be exported.
         </p>
-        
+
         <Button
           variant="default"
           onClick={handleExport}
-          disabled={selectedReports?.length === 0 || isExporting}
+          disabled={isExporting}
           loading={isExporting}
           iconName="Download"
           iconPosition="left"
