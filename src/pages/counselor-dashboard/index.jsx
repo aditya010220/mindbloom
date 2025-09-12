@@ -9,6 +9,7 @@ import ResourceManager from './components/ResourceManager';
 import RiskAlerts from './components/RiskAlerts';
 import Icon from '../../components/AppIcon';
 import Button from '../../components/ui/Button';
+import Input from '../../components/ui/Input';
 
 const CounselorDashboard = () => {
   const [activeTab, setActiveTab] = useState('overview');
