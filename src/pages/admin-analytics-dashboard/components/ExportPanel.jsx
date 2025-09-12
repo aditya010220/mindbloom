@@ -8,6 +8,45 @@ const ExportPanel = () => {
   const [dateRange, setDateRange] = useState('month');
   const [isExporting, setIsExporting] = useState(false);
 
+  const getSelectedReportData = (ids = selectedReports) => {
+    return reportTypes.filter(r => ids.includes(r.id)).map(r => {
+      const sizeInKB = r.size.includes('MB') ? parseFloat(r.size) * 1024 : parseFloat(r.size);
+      return {
+        id: r.id,
+        name: r.name,
+        description: r.description,
+        sizeKB: Math.round(sizeInKB),
+      };
+    });
+  };
+
+  const toCSV = (rows) => {
+    const escape = (val) => {
+      if (val === null || val === undefined) return '';
+      const s = String(val);
+      if (/[",\n]/.test(s)) return '"' + s.replace(/"/g, '""') + '"';
+      return s;
+    };
+    return rows.map(row => row.map(escape).join(',')).join('\r\n');
+  };
+
+  const downloadFile = (filename, content, mimeType) => {
+    const blob = new Blob([content], { type: mimeType });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = filename;
+    document.body.appendChild(a);
+    a.click();
+    a.remove();
+    URL.revokeObjectURL(url);
+  };
+
+  const getDateRangeLabel = () => {
+    const range = dateRanges.find(r => r.value === dateRange);
+    return range ? range.label : dateRange;
+  };
+
   const reportTypes = [
     {
       id: 'stress-heatmap',
@@ -86,17 +125,46 @@ const ExportPanel = () => {
   };
 
   const handleExport = async () => {
-    if (selectedReports?.length === 0) return;
-    
+    const ids = selectedReports.length > 0 ? selectedReports : reportTypes.map(r => r.id);
+    if (ids.length === 0) return;
     setIsExporting(true);
-    
-    // Simulate export process
-    await new Promise(resolve => setTimeout(resolve, 3000));
-    
-    setIsExporting(false);
-    
-    // Show success message (in real app, this would trigger download)
-    alert(`Successfully exported ${selectedReports?.length} report(s) as ${exportFormat?.toUpperCase()}`);
+
+    try {
+      const selected = getSelectedReportData(ids);
+      const exportedAt = new Date().toISOString();
+      const rangeLabel = getDateRangeLabel();
+
+      let actualFormat = exportFormat;
+      let filename = `analytics-export-${new Date().toISOString().slice(0,19).replace(/[:T]/g,'-')}`;
+
+      if (exportFormat === 'csv' || exportFormat === 'excel') {
+        const header = ['report_id','report_name','description','size_kb','date_range','exported_at'];
+        const rows = [header, ...selected.map(r => [r.id, r.name, r.description, r.sizeKB, rangeLabel, exportedAt])];
+        const csv = toCSV(rows);
+        filename += '.csv';
+        downloadFile(filename, csv, 'text/csv;charset=utf-8;');
+      } else if (exportFormat === 'pdf' || exportFormat === 'powerpoint') {
+        // Fallback: export CSV for unsupported formats in this frontend-only demo
+        const header = ['report_id','report_name','description','size_kb','date_range','exported_at'];
+        const rows = [header, ...selected.map(r => [r.id, r.name, r.description, r.sizeKB, rangeLabel, exportedAt])];
+        const csv = toCSV(rows);
+        filename += '.csv';
+        actualFormat = 'csv';
+        downloadFile(filename, csv, 'text/csv;charset=utf-8;');
+      } else {
+        const payload = { meta: { date_range: rangeLabel, exported_at: exportedAt }, reports: selected };
+        filename += '.json';
+        downloadFile(filename, JSON.stringify(payload, null, 2), 'application/json;charset=utf-8;');
+        actualFormat = 'json';
+      }
+
+      alert(`Downloaded ${selected.length} report(s) as ${actualFormat.toUpperCase()}`);
+    } catch (e) {
+      console.error(e);
+      alert('Export failed. Please try again.');
+    } finally {
+      setIsExporting(false);
+    }
   };
 
   const getTotalSize = () => {
@@ -230,13 +298,13 @@ const ExportPanel = () => {
       {/* Export Button */}
       <div className="flex items-center justify-between pt-4 border-t border-border">
         <p className="text-xs text-muted-foreground">
-          Reports will be generated with current data and sent to your email
+          Exports download immediately. If no reports are selected, all will be exported.
         </p>
-        
+
         <Button
           variant="default"
           onClick={handleExport}
-          disabled={selectedReports?.length === 0 || isExporting}
+          disabled={isExporting}
           loading={isExporting}
           iconName="Download"
           iconPosition="left"

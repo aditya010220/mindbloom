@@ -166,7 +166,7 @@ const Header = ({ userRole = 'student', isAuthenticated = true }) => {
             <nav className="hidden md:flex items-center space-x-1">
               {navigationItems?.map((item) => (
                 <Button
-                  key={item?.path}
+                  key={`${item?.path}-${item?.label}`}
                   variant={location?.pathname === item?.path ? "secondary" : "ghost"}
                   onClick={() => handleNavigation(item?.path)}
                   iconName={item?.icon}
@@ -299,7 +299,7 @@ const Header = ({ userRole = 'student', isAuthenticated = true }) => {
             <div className="px-4 py-4 space-y-2">
               {navigationItems?.map((item) => (
                 <Button
-                  key={item?.path}
+                  key={`${item?.path}-${item?.label}`}
                   variant={location?.pathname === item?.path ? "secondary" : "ghost"}
                   fullWidth
                   onClick={() => handleNavigation(item?.path)}
@@ -397,7 +397,7 @@ const Header = ({ userRole = 'student', isAuthenticated = true }) => {
       </header>
       {/* Crisis Support Modal */}
       {showCrisisSupport && (
-        <div className="fixed inset-0 z-300 bg-black/50 backdrop-blur-sm flex items-center justify-center p-4">
+        <div className="fixed inset-0 z-100 bg-black/50 backdrop-blur-sm flex items-center justify-center p-4">
           <div className="glass-card max-w-md w-full p-6 rounded-lg animate-growth">
             <div className="flex items-center justify-between mb-4">
               <div className="flex items-center space-x-2">
