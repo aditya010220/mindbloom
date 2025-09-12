@@ -141,6 +141,7 @@ const CounselorDashboard = () => {
                   iconName="Bell"
                   iconPosition="left"
                   className="relative"
+                  onClick={() => setShowNotifications(true)}
                 >
                   Notifications
                   {quickStats?.highRiskAlerts > 0 && (
@@ -154,6 +155,7 @@ const CounselorDashboard = () => {
                   variant="secondary"
                   iconName="Plus"
                   iconPosition="left"
+                  onClick={() => setShowNewSession(true)}
                 >
                   New Session
                 </Button>
@@ -202,8 +204,89 @@ const CounselorDashboard = () => {
           size="icon"
           iconName="Plus"
           className="rounded-full shadow-prominent w-14 h-14"
+          onClick={() => setShowNewSession(true)}
         />
       </div>
+
+      {/* Notifications Modal */}
+      {showNotifications && (
+        <div className="fixed inset-0 z-100 bg-black/50 backdrop-blur-sm flex items-center justify-center p-4">
+          <div className="glass-card max-w-lg w-full p-6 rounded-lg animate-growth">
+            <div className="flex items-center justify-between mb-4">
+              <div className="flex items-center space-x-2">
+                <Icon name="Bell" className="text-primary" size={20} />
+                <h3 className="text-lg font-heading font-semibold text-foreground">Notifications</h3>
+              </div>
+              <Button variant="ghost" size="icon" iconName="X" onClick={() => setShowNotifications(false)} />
+            </div>
+            <div className="space-y-3">
+              <div className="p-3 rounded border border-border bg-background/60 flex items-start gap-3">
+                <Icon name="AlertTriangle" className="text-error mt-0.5" size={16} />
+                <div>
+                  <p className="text-sm text-foreground">3 high-risk alerts require attention.</p>
+                  <p className="text-xs text-muted-foreground">Review the Risk Alert System for immediate actions.</p>
+                </div>
+              </div>
+              <div className="p-3 rounded border border-border bg-background/60 flex items-start gap-3">
+                <Icon name="Calendar" className="text-primary mt-0.5" size={16} />
+                <div>
+                  <p className="text-sm text-foreground">Two sessions start within the next hour.</p>
+                  <p className="text-xs text-muted-foreground">Check your schedule to prepare resources.</p>
+                </div>
+              </div>
+              <div className="p-3 rounded border border-border bg-background/60 flex items-start gap-3">
+                <Icon name="FileText" className="text-warning mt-0.5" size={16} />
+                <div>
+                  <p className="text-sm text-foreground">You have 2 pending session notes.</p>
+                  <p className="text-xs text-muted-foreground">Complete documentation to keep records up to date.</p>
+                </div>
+              </div>
+            </div>
+            <div className="flex justify-end mt-4">
+              <Button variant="secondary" onClick={() => setShowNotifications(false)}>
+                Close
+              </Button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* New Session Modal */}
+      {showNewSession && (
+        <div className="fixed inset-0 z-100 bg-black/50 backdrop-blur-sm flex items-center justify-center p-4">
+          <div className="glass-card max-w-lg w-full p-6 rounded-lg animate-growth">
+            <div className="flex items-center justify-between mb-4">
+              <div className="flex items-center space-x-2">
+                <Icon name="Plus" className="text-primary" size={20} />
+                <h3 className="text-lg font-heading font-semibold text-foreground">Create New Session</h3>
+              </div>
+              <Button variant="ghost" size="icon" iconName="X" onClick={() => setShowNewSession(false)} />
+            </div>
+            <div className="space-y-3">
+              <Input label="Student Name" placeholder="Enter student name" value={newSession.student} onChange={(e)=>setNewSession(s=>({...s, student:e.target.value}))} />
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                <Input label="Date" type="date" value={newSession.date} onChange={(e)=>setNewSession(s=>({...s, date:e.target.value}))} />
+                <Input label="Time" type="time" value={newSession.time} onChange={(e)=>setNewSession(s=>({...s, time:e.target.value}))} />
+              </div>
+              <div>
+                <label className="text-sm font-medium text-foreground mb-2 block">Session Type</label>
+                <div className="flex gap-2 flex-wrap">
+                  {['individual','group','assessment'].map(t => (
+                    <button key={t} onClick={()=>setNewSession(s=>({...s, type:t}))} type="button" className={`px-3 py-1 rounded border text-sm ${newSession.type===t? 'border-primary text-primary bg-primary/5':'border-border'}`}>{t.charAt(0).toUpperCase()+t.slice(1)}</button>
+                  ))}
+                </div>
+              </div>
+              <textarea className="w-full h-28 p-3 border border-border rounded-md bg-background text-foreground resize-none focus:outline-none focus:ring-2 focus:ring-primary/20" placeholder="Notes (optional)" value={newSession.notes} onChange={(e)=>setNewSession(s=>({...s, notes:e.target.value}))} />
+            </div>
+            <div className="flex justify-end gap-2 mt-4">
+              <Button variant="outline" onClick={()=>setShowNewSession(false)}>Cancel</Button>
+              <Button variant="default" iconName="Save" iconPosition="left" onClick={()=>{setShowNewSession(false);}}>
+                Create Session
+              </Button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 };
