@@ -14,6 +14,7 @@ import CounselorLogin from './pages/counselor-login';
 import RegisterPage from './pages/register';
 import CounselorSessions from './pages/counselor-sessions';
 import CounselorSchedule from './pages/counselor-schedule';
+import SelfAssessmentPage from './pages/self-assessment';
 
 const Routes = () => {
   return (
@@ -34,6 +35,7 @@ const Routes = () => {
         <Route path="/appointment-booking" element={<AppointmentBooking />} />
         <Route path="/admin-analytics-dashboard" element={<AdminAnalyticsDashboard />} />
         <Route path="/student-dashboard" element={<StudentDashboard />} />
+        <Route path="/self-assessment" element={<SelfAssessmentPage />} />
         <Route path="*" element={<NotFound />} />
       </RouterRoutes>
       </ErrorBoundary>
