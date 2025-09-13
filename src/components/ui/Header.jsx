@@ -41,6 +41,7 @@ const Header = ({ userRole = 'student', isAuthenticated = true }) => {
     if (userRole === 'student') {
       return [
         ...baseItems,
+        { label: 'Journal', path: '/journal', icon: 'BookOpen' },
         { label: 'AI Support', path: '/ai-chatbot-support', icon: 'MessageCircle' },
         { label: 'Book Session', path: '/appointment-booking', icon: 'Calendar' }
       ];

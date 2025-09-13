@@ -44,7 +44,7 @@ const QuickActionsGrid = () => {
       icon: 'BookOpen',
       color: 'from-orange-500/20 to-amber-500/20',
       iconColor: 'text-orange-600',
-      action: () => navigate('/digital-journal'),
+      action: () => navigate('/journal'),
       badge: 'Private'
     }
   ];
