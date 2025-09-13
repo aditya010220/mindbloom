@@ -14,8 +14,8 @@ const AuthIllustration = () => {
             </div>
             <div className="w-full rounded-xl border border-border/50 bg-background p-3">
               <Image
-                src="https://cdn.builder.io/api/v1/image/assets%2F9a77089a1d9440a79d59f2447a465d11%2F3b5f5fd8998948cdb91007771f9c56e0?format=webp&width=800"
-                alt="Admin portal illustration"
+                src="https://cdn.builder.io/api/v1/image/assets%2F9a77089a1d9440a79d59f2447a465d11%2F640fae7316624c7ba0a82ce63a20d2fb?format=webp&width=800"
+                alt="Login illustration"
                 className="w-full h-40 object-cover rounded-md"
               />
             </div>
